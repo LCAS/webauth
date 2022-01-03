@@ -27,11 +27,11 @@ WORKDIR ${INSTALL_PATH}
 RUN pip3 install -r requirements.txt \
     && python3 -m unittest discover -s . -p "*_test.py" &> /dev/null && echo "All unittests OK!"
 
-ARG FRONTEND_VER=1.0.0
+ARG FRONTEND_VER=1.0.1
 RUN curl \
     --location \
     --silent \
-    https://github.com/1nfiniteloop/webauth-frontend/releases/download/v${FRONTEND_VER}/webauth-frontend.tar.gz \
+    https://github.com/LCAS/webauth-frontend/releases/download/v${FRONTEND_VER}/webauth-frontend.tar.gz \
     |tar -xz -C ${INSTALL_PATH}
 
 USER webauth
