@@ -115,7 +115,7 @@ class Application:
         self.create_service_for_frontend(routes)
 
     def get_default_user_registration_link_builder(self) -> UserAccountActivationLinkBuilder:
-        provider_name = "google"
+        provider_name = "keycloak"
         openid_providers = self._config.endpoints.user.openid_providers
         if provider_name in openid_providers:
             user_registration_link = self._create_user_registration_link_template(
