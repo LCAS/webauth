@@ -1,0 +1,14 @@
+
+version: '2.0'
+
+# services
+services:
+  webauth:
+    build: .
+    image: webauth-server:latest
+    restart: always
+    volumes:
+    - /srv/webauth:/mnt/webauth:rw
+    ports:
+    - 8099:8099
+    - 9443:8443
