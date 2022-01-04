@@ -4,8 +4,8 @@ version: '2.0'
 # services
 services:
   webauth:
-    build: .
-    image: webauth-server:latest
+    build: ..
+    image: lcas.lincoln.ac.uk/lcas/webauth:master
     restart: always
     volumes:
     - /srv/webauth:/mnt/webauth:rw
