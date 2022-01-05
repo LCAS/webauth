@@ -93,10 +93,13 @@ class JsonFormattedUserAccountStorage(UserAccountStorage):
         data = json.dumps(self._users, indent=4)
         self._storage.write(data)
 
-    def add_user(self, user_data: ApplicationUserData, identity: UserIdentity = None) -> User:
-        user_id = uuid.uuid4()
+    def add_user(self, user_data: ApplicationUserData, identity: UserIdentity = None, predef_user_id: str = None) -> User:
+        if predef_user_id:
+            user_id = predef_user_id
+        else:
+            user_id = str(uuid.uuid4())
         user = User(
-            str(user_id),
+            user_id,
             user_data[JsonAttribute.name],
             user_data[JsonAttribute.privilege]
         )

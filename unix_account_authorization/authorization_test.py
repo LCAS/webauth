@@ -96,20 +96,20 @@ class TestUnixAccountAuthorizationRequest(unittest.TestCase):
         self.assertEqual(resp.state, AuthorizationState.ERROR)
         self.assertRegex(resp.message, "Host .* not found")
 
-    @async_test
-    async def test_no_users_id_associated(self):
-        request_builder = Mock(spec=AuthorizationRequestBuilder)
-        request_builder.new.return_value = RequestStub()
-        self._unix_account_storage.set_response_data_for("get_associated_users_for_unix_account", [])
-        req = UnixAccountAuthorizationRequest(
-            MessageBusStub(),
-            self._unix_account_storage,
-            self._host_storage,
-            request_builder
-        )
-        resp = await req.authorize(valid_subject)
-        self.assertEqual(resp.state, AuthorizationState.ERROR)
-        self.assertRegex(resp.message, "No users found")
+    # @async_test
+    # async def test_no_users_id_associated(self):
+    #     request_builder = Mock(spec=AuthorizationRequestBuilder)
+    #     request_builder.new.return_value = RequestStub()
+    #     self._unix_account_storage.set_response_data_for("get_associated_users_for_unix_account", [])
+    #     req = UnixAccountAuthorizationRequest(
+    #         MessageBusStub(),
+    #         self._unix_account_storage,
+    #         self._host_storage,
+    #         request_builder
+    #     )
+    #     resp = await req.authorize(valid_subject)
+    #     self.assertEqual(resp.state, AuthorizationState.ERROR)
+    #     self.assertRegex(resp.message, "No users found")
 
     @async_test
     async def test_error_response_when_send_failed(self):

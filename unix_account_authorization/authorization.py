@@ -48,10 +48,11 @@ class AuthorizationRequestSubject:
 
     DEFAULT_TIMEOUT = 30  # seconds
 
-    def __init__(self, host_id: str, unix_account_id: int, service_name: str, timeout: int = DEFAULT_TIMEOUT):
+    def __init__(self, host_id: str, unix_account_id: int, service_name: str, username: str = None, timeout: int = DEFAULT_TIMEOUT):
         self._host_id = host_id
         self._unix_account_id = unix_account_id
         self._service_name = service_name
+        self._username = username
         self._expires = datetime.now() + timedelta(seconds=timeout)
 
     @property
@@ -65,6 +66,10 @@ class AuthorizationRequestSubject:
     @property
     def service_name(self) -> str:
         return self._service_name
+
+    @property
+    def username(self) -> str:
+        return self._username
 
     @property
     def expires(self) -> datetime:
@@ -180,9 +185,14 @@ class UnixAccountAuthorizationRequest(AuthorizationRequest):
         self._request_builder = request_builder
 
     async def authorize(self, subject: AuthorizationRequestSubject) -> AuthorizationResponse:
+        log.info("Authorization request for %s" % subject)
         response = Response()
         host = self._get_host(subject.host_id)
         users_id = self._get_users_id(subject.unix_account_id)
+        if not users_id:
+            log.info("couldn't find unix ID %d, looking up by username directly now" % subject.unix_account_id)
+            users_id = self._get_users_id_by_username(subject.username)
+            log.info("found users_id: %s" % users_id)
         if not host.id:
             response.set_state_error("Host with id '{id}' not found".format(id=subject.host_id))
         elif not users_id:
@@ -191,7 +201,7 @@ class UnixAccountAuthorizationRequest(AuthorizationRequest):
             ))
         else:
             message = AuthorizationRequestMessage(
-                self._get_unix_account_name(subject.unix_account_id),
+                self._get_unix_account_name(subject.unix_account_id, subject.username),
                 host.name,
                 subject.service_name,
             )
@@ -212,6 +222,9 @@ class UnixAccountAuthorizationRequest(AuthorizationRequest):
     def _get_users_id(self, unix_account_id: int) -> list:
         return self._unix_account_storage.get_associated_users_for_unix_account(unix_account_id)
 
+    def _get_users_id_by_username(self, unix_account_id: str) -> list:
+        return self._unix_account_storage.get_associated_users_for_unix_account_username(unix_account_id)
+
     def _create_on_response_callback(self, users_id: List[str], request_id: str, response: Response) -> ResponseCallback:
         on_response_cb = lambda state: self._send_update(
             users_id,
@@ -223,6 +236,8 @@ class UnixAccountAuthorizationRequest(AuthorizationRequest):
         for user_id in users_id:
             self._msg_bus.publish(topic_user_updates(user_id), msg)
 
-    def _get_unix_account_name(self, unix_account_id: int) -> str:
+    def _get_unix_account_name(self, unix_account_id: int, username: str=None) -> str:
         unix_account = self._unix_account_storage.get_unix_account_by_id(unix_account_id)
+        if unix_account.name == "nonexisting-account" and username is not None:
+            return username
         return unix_account.name

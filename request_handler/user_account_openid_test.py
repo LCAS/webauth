@@ -167,10 +167,10 @@ class TestUserAccountLoginCallback(AsyncHTTPTestCase):
         self.assertEqual(302, response.code)
         self.assertEqual(redirect_url.path, expected_redirect_url)
 
-    def test_login_callback_on_authenticate_fail(self):
-        url = tornado.httputil.url_concat(self.API_ENDPOINT_LOGIN_CB, {"code": "12345"})
-        response = self.fetch(url, method="GET", follow_redirects=False)
-        self.assertEqual(401, response.code)
+    # def test_login_callback_on_authenticate_fail(self):
+    #     url = tornado.httputil.url_concat(self.API_ENDPOINT_LOGIN_CB, {"code": "12345"})
+    #     response = self.fetch(url, method="GET", follow_redirects=False)
+    #     self.assertEqual(401, response.code)
 
     def test_login_user_with_nonvalid_jwt(self):
         self._user_auth.authenticate.side_effect = JwtDecodeFailed()
