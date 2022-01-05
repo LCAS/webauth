@@ -26,7 +26,7 @@ class SslCertificate:
 
 
 class Parameter(object):
-    UNIX_ACCOUNT_ID, SERVICE = "unix_account_id", "service"
+    UNIX_ACCOUNT_ID, SERVICE, USERNAME = "unix_account_id", "service", "username"
 
 
 class UnixAccountAuthorization(tornado.web.RequestHandler):
@@ -40,12 +40,14 @@ class UnixAccountAuthorization(tornado.web.RequestHandler):
         host_id = self._get_host_id()
         user_id = self.get_argument(Parameter.UNIX_ACCOUNT_ID)
         service_name = self.get_argument(Parameter.SERVICE)
+        username = self.get_argument(Parameter.USERNAME, None)
         if not user_id.isnumeric():
             raise tornado.web.HTTPError(400)
         resp = await self._auth.authorize(AuthorizationRequestSubject(
             host_id,
             int(user_id),
-            service_name
+            service_name,
+            username
         ))
         if resp.state == AuthorizationState.AUTHORIZED:
             self.set_status(200)

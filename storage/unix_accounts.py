@@ -116,5 +116,12 @@ class JsonFormattedUnixAccountStorage(UnixAccountStorage):
         unix_account = self._get_unix_account_by_id(id_)
         return unix_account.get(JsonAttribute.associations, default_return_value)
 
+    def get_associated_users_for_unix_account_username(self, id_: str) -> list:
+        if id_ is not None:
+            default_return_value = [id_]
+        else:
+            default_return_value = []
+        return default_return_value
+
     def __str__(self) -> str:
         return json.dumps(self._accounts, indent=4)

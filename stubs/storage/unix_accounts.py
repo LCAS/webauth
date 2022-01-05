@@ -16,7 +16,8 @@ class UnixAccountStorageStub(UnixAccountStorage, StubResponseMixin):
             "get_all_unix_accounts": [unix_account],
             "associate_user_to_unix_account": True,
             "disassociate_user_from_unix_account": True,
-            "get_associated_users_for_unix_account": ["1234-56778"]
+            "get_associated_users_for_unix_account": ["1234-56778"],
+            "get_associated_users_for_unix_account_username": ["1234-56778"]
         }
         return response_data
 
@@ -45,3 +46,7 @@ class UnixAccountStorageStub(UnixAccountStorage, StubResponseMixin):
 
     def get_associated_users_for_unix_account(self, unix_account_id: int) -> list:
         return self.get_response()
+
+    def get_associated_users_for_unix_account_username(self, unix_account_id: str) -> list:
+        return self.get_response()
+
