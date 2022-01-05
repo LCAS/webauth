@@ -52,7 +52,7 @@ class OpenIDUserAccount:
     def register_new_user(self, id_token: dict) -> User:
         user_data = ApplicationUserData(name=id_token[IDTokenAttribute.NAME])
         user_identity = self._new_identity(id_token)
-        user = self._user_storage.add_user(user_data, user_identity)
+        user = self._user_storage.add_user(user_data, user_identity, predef_user_id = id_token[IDTokenAttribute.USERNAME])
         return user
 
     def register_new_identity(self, user: User, id_token: dict) -> bool:
