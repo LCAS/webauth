@@ -111,7 +111,9 @@ class UserAccountLoginCallback(AuthenticatedUserBase, OAuth2Mixin):
                 if authenticated:
                     self.redirect(self._app_base_path)
                 else:
-                    self.send_error(401, reason="User is unauthorized")
+                    print("base path: %s" % self._app_base_path)
+                    self.redirect(self._app_base_path + "api/register/keycloak")
+
             except TokenRequestFailed as err:
                 self.send_error(400, reason="User registration failed")
                 log.error("User registration failed: {err}".format(err=err))
