@@ -17,7 +17,7 @@ from storage import (
 
 
 class IDTokenAttribute:
-    ISSUER, AUDIENCE, SUBJECT, NAME = "iss", "aud", "sub", "name"
+    ISSUER, AUDIENCE, SUBJECT, NAME, USERNAME = "iss", "aud", "sub", "name", "preferred_username"
 
 
 class OpenIdUserIdentity(UserIdentity):
@@ -41,7 +41,7 @@ class OpenIDUserAccount:
         identity = OpenIdUserIdentity(
             issuer=id_token[IDTokenAttribute.ISSUER],
             client_id=id_token[IDTokenAttribute.AUDIENCE],
-            user_id=id_token[IDTokenAttribute.SUBJECT]
+            user_id=id_token[IDTokenAttribute.USERNAME]
         )
         return identity
 
