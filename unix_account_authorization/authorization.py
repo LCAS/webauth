@@ -236,8 +236,8 @@ class UnixAccountAuthorizationRequest(AuthorizationRequest):
         for user_id in users_id:
             self._msg_bus.publish(topic_user_updates(user_id), msg)
 
-    def _get_unix_account_name(self, unix_account_id: int, username: str="unknown") -> str:
+    def _get_unix_account_name(self, unix_account_id: int, username: str=None) -> str:
         unix_account = self._unix_account_storage.get_unix_account_by_id(unix_account_id)
-        if not unix_account:
-            unix_account = username
+        if unix_account.name == "nonexisting-account" and username is not None:
+            return username
         return unix_account.name
