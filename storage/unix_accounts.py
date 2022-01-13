@@ -116,9 +116,17 @@ class JsonFormattedUnixAccountStorage(UnixAccountStorage):
         unix_account = self._get_unix_account_by_id(id_)
         return unix_account.get(JsonAttribute.associations, default_return_value)
 
+    def remove_prefix(self, text: str, prefix: str) -> str:
+        if text.startswith(prefix):
+            return text[len(prefix):]
+        return text
+
     def get_associated_users_for_unix_account_username(self, id_: str) -> list:
         if id_ is not None:
-            default_return_value = [id_.replace('_','')]
+            # This is a hack for UOL only, to remove a possible username prefix to 
+            # to allow for numeric only openid users, but matching to the `uol_` prefixed
+            # unix account
+            default_return_value = [self.remove_prefix(id_, "uol_")]
         else:
             default_return_value = []
         return default_return_value
