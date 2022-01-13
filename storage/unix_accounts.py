@@ -118,7 +118,7 @@ class JsonFormattedUnixAccountStorage(UnixAccountStorage):
 
     def get_associated_users_for_unix_account_username(self, id_: str) -> list:
         if id_ is not None:
-            default_return_value = [id_]
+            default_return_value = [id_.replace('_','')]
         else:
             default_return_value = []
         return default_return_value
